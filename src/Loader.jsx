@@ -4,5 +4,5 @@ export default function Loader() {
       <div className="loader"></div>
       <p>Loading questions...</p>
     </div>
-  );
+  )
 }
