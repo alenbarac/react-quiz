@@ -3,6 +3,8 @@ import { useEffect, useReducer } from 'react'
 import Loader from './components/Loader'
 import StartScreen from './components/StartScreen'
 import Question from './components/Question'
+import NextButton from './components/NextButton'
+import Progress from './components/Progress'
 
 function App() {
   function reducer(state, action) {
@@ -34,6 +36,13 @@ function App() {
               : state.points,
         }
 
+      case 'nextQuestion':
+        return {
+          ...state,
+          index: state.index + 1,
+          answer: null,
+        }
+
       default:
         throw new Error('Action unknown')
     }
@@ -50,9 +59,10 @@ function App() {
 
   const [state, dispatch] = useReducer(reducer, initialState)
 
-  const { questions, status, index, answer } = state
+  const { questions, status, index, answer, points } = state
 
   const numQuestions = questions.length
+  const maxPoints = questions.reduce((prev, curr) => prev + curr.points, 0)
 
   useEffect(() => {
     fetch('http://localhost:8000/questions')
@@ -68,7 +78,17 @@ function App() {
         {status === 'error' && <Error />}
         {status === 'ready' && <StartScreen numQuestions={numQuestions} dispatch={dispatch} />}
         {status === 'active' && (
-          <Question question={questions[index]} dispatch={dispatch} answer={answer} />
+          <>
+            <Progress
+              index={index}
+              numQuestions={numQuestions}
+              points={points}
+              maxPoints={maxPoints}
+              answer={answer}
+            />
+            <Question question={questions[index]} dispatch={dispatch} answer={answer} />
+            <NextButton dispatch={dispatch} answer={answer} />
+          </>
         )}
       </Body>
     </div>
