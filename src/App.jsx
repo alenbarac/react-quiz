@@ -50,6 +50,15 @@ function App() {
           status: 'finished',
           highScore: state.points > state.highScore ? state.points : state.highScore,
         }
+      case 'resetQuiz':
+        return {
+          ...state,
+          status: 'ready',
+          index: 0,
+          answer: null,
+          points: 0,
+          highScore: 0,
+        }
 
       default:
         throw new Error('Action unknown')
@@ -105,7 +114,12 @@ function App() {
           </>
         )}
         {status === 'finished' && (
-          <FinishedSreen points={points} maxPoints={maxPoints} highScore={highScore} />
+          <FinishedSreen
+            points={points}
+            maxPoints={maxPoints}
+            highScore={highScore}
+            dispatch={dispatch}
+          />
         )}
       </Body>
     </div>
